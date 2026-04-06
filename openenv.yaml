@@ -1,0 +1,7 @@
+name: traffic-env
+description: Smart traffic RL environment
+
+tasks:
+  - name: easy
+  - name: medium
+  - name: hard
