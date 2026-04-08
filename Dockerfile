@@ -1,8 +1,5 @@
-FROM python:3.10
-
+FROM ghcr.io/meta-pytorch/openenv-base:latest
+COPY . /app
 WORKDIR /app
-COPY . .
-
-RUN pip install numpy
-
-CMD ["python", "inference.py"]
+RUN pip install fastapi uvicorn
+CMD ["uvicorn", "server:app", "--host", "0.0.0.0", "--port", "7860"]
