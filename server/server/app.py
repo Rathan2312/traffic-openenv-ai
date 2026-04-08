@@ -2,9 +2,9 @@ from fastapi import FastAPI
 from pydantic import BaseModel
 from typing import Optional
 from env import TrafficEnv
+import uvicorn
 
 app = FastAPI()
-
 envs = {}
 
 class ResetRequest(BaseModel):
@@ -35,6 +35,12 @@ def step(req: StepRequest):
         return {"error": "No env found. Call /reset first."}
     state, reward, done = envs[level].step(req.action)
     return {"state": state, "reward": reward, "done": done}
+
+def main():
+    uvicorn.run(app, host="0.0.0.0", port=7860)
+
+if __name__ == "__main__":
+    main()    return {"state": state, "reward": reward, "done": done}
 
 def main():
     uvicorn.run(app, host="0.0.0.0", port=7860)
