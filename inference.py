@@ -1,24 +1,35 @@
-import os
+from fastapi import FastAPI
+from pydantic import BaseModel
 from env import TrafficEnv
-from grader import evaluate
 
-# Required env variables
-API_BASE_URL = os.getenv("API_BASE_URL", "")
-MODEL_NAME = os.getenv("MODEL_NAME", "")
-HF_TOKEN = os.getenv("HF_TOKEN", "")
+app = FastAPI()
 
-def simple_policy(state):
-    if state[0] + state[1] > state[2] + state[3]:
-        return 0
-    return 1
+envs = {}
 
+class ResetRequest(BaseModel):
+    level: str = "easy"
 
-if __name__ == "__main__":
+class StepRequest(BaseModel):
+    action: int
+    session_id: str = "default"
 
-    for level in ["easy", "medium", "hard"]:
-        env = TrafficEnv(level)
-        score = evaluate(env, simple_policy)
+@app.post("/reset")
+def reset(req: ResetRequest):
+    env = TrafficEnv(level=req.level)
+    state = env.reset()
+    envs[req.level] = env
+    return {"state": state}
 
-        print(f"[START] Level: {level}")
-        print(f"[STEP] Score: {score}")
-        print(f"[END]")
+@app.get("/state")
+def get_state(level: str = "easy"):
+    if level not in envs:
+        return {"error": "No env found. Call /reset first."}
+    return {"state": envs[level].state_fn()}
+
+@app.post("/step")
+def step(req: StepRequest):
+    level = req.session_id if req.session_id in envs else "easy"
+    if level not in envs:
+        return {"error": "No env found. Call /reset first."}
+    state, reward, done = envs[level].step(req.action)
+    return {"state": state, "reward":
