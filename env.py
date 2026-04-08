@@ -28,7 +28,7 @@ class TrafficEnv:
             self.state[0] -= min(self.state[0], 4)
             self.state[1] -= min(self.state[1], 4)
         else:
-            cleared = min(self.state[2], 4) + min(self.state[2], 4)
+            cleared = min(self.state[2], 4) + min(self.state[3], 4)
             self.state[2] -= min(self.state[2], 4)
             self.state[3] -= min(self.state[3], 4)
 
