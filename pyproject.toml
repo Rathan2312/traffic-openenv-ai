@@ -3,6 +3,14 @@ name = "traffic-ai-env"
 version = "0.1.0"
 description = "Smart traffic RL environment"
 requires-python = ">=3.8"
+dependencies = [
+    "openenv-core>=0.2.0",
+    "fastapi",
+    "uvicorn",
+]
+
+[project.scripts]
+server = "server:app"
 
 [build-system]
 requires = ["setuptools"]
